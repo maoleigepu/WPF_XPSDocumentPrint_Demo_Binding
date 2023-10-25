@@ -10,6 +10,11 @@ using System.IO;
 using System.Windows.Xps.Packaging;
 using System.Windows.Xps;
 using System.Threading;
+using Prism.Commands;
+using System.Windows.Markup;
+using WPF_XPSDocumentPrint_Demo.Attributes;
+using System.Linq;
+using WPF_XPSDocumentPrint_Demo.Models;
 
 namespace WPF_XPSDocumentPrint_Demo.ViewModels
 {
@@ -32,6 +37,8 @@ namespace WPF_XPSDocumentPrint_Demo.ViewModels
             set { _StudentDocument = value; RaisePropertyChanged(); }
         }
 
+        public DelegateCommand<bool?> ChangeDocCommand { get; set; }
+
 
         private delegate void LoadXpsMethod();
         private MemoryStream ms;
@@ -40,11 +47,41 @@ namespace WPF_XPSDocumentPrint_Demo.ViewModels
 
         public MainWindowViewModel()
         {
-            var doc = FillFlowDocument();
-            Application.Current.Dispatcher.BeginInvoke(
-                new LoadXpsMethod(() => FillDocumentViewer(doc)), DispatcherPriority.ApplicationIdle);
+            ChangeDocCommand = new DelegateCommand<bool?>(b => ChangeDoc(b));
         }
 
+        private void ChangeDoc(bool? isChecked)
+        {
+            FlowDocument doc = null;
+            if (isChecked==false)
+            {
+                doc = FillFlowDocument<Student>(new Student
+                {
+                    Name = "Test1",
+                    Class = "Test1",
+                    Chinese = 99,
+                    Math = 59,
+                    English = 66,
+                    Comments = "Test1"
+                });
+                Application.Current.Dispatcher.InvokeAsync(()=>FillDocumentViewer(doc), DispatcherPriority.ApplicationIdle);
+            }
+            else if(isChecked==true)
+            {
+
+                doc = FillFlowDocument<PrintTemplate1>(new PrintTemplate1
+                {
+                    Name = "Test2",
+                    Class = "Test2",
+                    Chinese = 99,
+                    Math = 59,
+                    English = 66,
+                    Comments = "Test2"
+                });
+                Application.Current.Dispatcher.InvokeAsync(() => FillDocumentViewer(doc), DispatcherPriority.ApplicationIdle);
+            }
+            
+        }
 
         private void FillDocumentViewer(FlowDocument doc)
         {
@@ -53,12 +90,16 @@ namespace WPF_XPSDocumentPrint_Demo.ViewModels
                 ms = new MemoryStream();
                 package = Package.Open(ms, FileMode.Create, FileAccess.ReadWrite);
                 DocumentUri = new Uri("pack://InMemoryDocument.xps");
-                PackageStore.AddPackage(DocumentUri, package);
+                if (PackageStore.GetPackage(DocumentUri) == null)
+                {
+                    PackageStore.AddPackage(DocumentUri, package);
+                }
                 XpsDocument xpsDocument = new XpsDocument(package, CompressionOption.Fast, DocumentUri.AbsoluteUri);
                 XpsDocumentWriter writer = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
                 writer.Write(((IDocumentPaginatorSource)doc).DocumentPaginator);
                 StudentDocument = xpsDocument.GetFixedDocumentSequence();
                 xpsDocument.Close();
+                Dispose();
             }
             catch (Exception e)
             {
@@ -66,19 +107,23 @@ namespace WPF_XPSDocumentPrint_Demo.ViewModels
             }
         }
 
-        private FlowDocument FillFlowDocument()
+        private FlowDocument FillFlowDocument<T>(T data)
         {
-            var doc = (FlowDocument)Application.LoadComponent(new Uri("/WPF_XPSDocumentPrint_Demo;component/Resources/StudentTemplate.xaml", UriKind.RelativeOrAbsolute));
-            doc.DataContext = new Models.Student
+            var type = data.GetType();
+            var att = Attribute.GetCustomAttributes(type, typeof(PrintAttribute)).FirstOrDefault();
+
+            if (att != null)
             {
-                Name = "傲慢与偏见",
-                Class = "三年一班",
-                Chinese = 99,
-                Math = 59,
-                English = 66,
-                Comments = "此乃难得一见的奇才，未来可期！！！（Tips:这文字是绑定的，不是静态数据）"
-            };
-            return doc;
+                var attName = ((PrintAttribute)att).GetName();
+                var doc = (FlowDocument)Application.LoadComponent(new Uri($"/WPF_XPSDocumentPrint_Demo;component/Resources/{attName}", UriKind.RelativeOrAbsolute));
+                doc.DataContext = data;
+
+                return doc;
+            }
+            else
+            {
+                return new FlowDocument();
+            }
         }
 
         public void Dispose()

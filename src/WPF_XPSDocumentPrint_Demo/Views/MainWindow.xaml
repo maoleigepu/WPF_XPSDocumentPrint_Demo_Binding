@@ -3,11 +3,80 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:prism="http://prismlibrary.com/"
+    xmlns:ui="clr-namespace:System.Windows.Documents;assembly=PresentationUI"
     Title="{Binding Title}"
     Width="1280"
     Height="800"
     prism:ViewModelLocator.AutoWireViewModel="True">
+    <Window.Resources>
+        <ControlTemplate x:Key="DocumentViewerTemplate1" TargetType="{x:Type DocumentViewer}">
+            <Border
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Focusable="False">
+                <Grid Background="{TemplateBinding Background}" KeyboardNavigation.TabNavigation="Local">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ContentControl
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Focusable="{TemplateBinding Focusable}"
+                        Style="{DynamicResource {ComponentResourceKey ResourceId=PUIDocumentViewerToolBarStyleKey,
+                                                                      TypeInTargetAssembly={x:Type ui:PresentationUIStyleResources}}}"
+                        TabIndex="0" />
+                    <ScrollViewer
+                        x:Name="PART_ContentHost"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        CanContentScroll="true"
+                        Focusable="{TemplateBinding Focusable}"
+                        HorizontalScrollBarVisibility="Auto"
+                        IsTabStop="true"
+                        TabIndex="1" />
+                    <DockPanel Grid.Row="1">
+                        <FrameworkElement Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" DockPanel.Dock="Right" />
+                        <Rectangle
+                            Height="10"
+                            VerticalAlignment="top"
+                            Visibility="Visible">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <LinearGradientBrush.GradientStops>
+                                        <GradientStopCollection>
+                                            <GradientStop Offset="0" Color="#66000000" />
+                                            <GradientStop Offset="1" Color="Transparent" />
+                                        </GradientStopCollection>
+                                    </LinearGradientBrush.GradientStops>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </DockPanel>
+                    <ContentControl
+                        x:Name="PART_FindToolBarHost"
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Focusable="{TemplateBinding Focusable}"
+                        TabIndex="2" />
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid>
-        <DocumentViewer Document="{Binding StudentDocument}" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10*" />
+        </Grid.ColumnDefinitions>
+        <CheckBox Command="{Binding ChangeDocCommand}" IsChecked="True" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Mode=Self}}"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="20"/>
+        <DocumentViewer
+            Grid.Column="1"
+            Document="{Binding StudentDocument}"
+            Style="{DynamicResource DocumentViewer}"
+            Template="{DynamicResource DocumentViewerTemplate1}" />
     </Grid>
 </Window>

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "HvmA7xE49h1I10DciX5OivWEuV2AZNU+B7GBU5KfCQNZ5uR4PzyDnjP6aTMEtVJbSypOJki9e/4/YIpUBcv1GQ==",
+  "success": true,
+  "projectFilePath": "D:\\demos\\WPF_XPSDocumentPrint_Demo_Binding\\src\\WPF_XPSDocumentPrint_Demo\\WPF_XPSDocumentPrint_Demo.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\maole\\.nuget\\packages\\dryioc.dll\\4.5.0\\dryioc.dll.4.5.0.nupkg.sha512",
+    "C:\\Users\\maole\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.19\\microsoft.xaml.behaviors.wpf.1.1.19.nupkg.sha512",
+    "C:\\Users\\maole\\.nuget\\packages\\prism.core\\8.0.0.1909\\prism.core.8.0.0.1909.nupkg.sha512",
+    "C:\\Users\\maole\\.nuget\\packages\\prism.dryioc\\8.0.0.1909\\prism.dryioc.8.0.0.1909.nupkg.sha512",
+    "C:\\Users\\maole\\.nuget\\packages\\prism.wpf\\8.0.0.1909\\prism.wpf.8.0.0.1909.nupkg.sha512",
+    "C:\\Users\\maole\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}

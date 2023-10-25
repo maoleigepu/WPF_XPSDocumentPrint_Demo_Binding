@@ -1,10 +1,15 @@
 ﻿using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using WPF_XPSDocumentPrint_Demo.Attributes;
 
 namespace WPF_XPSDocumentPrint_Demo.Models
 {
-    [Print("StudentTemplate.xaml")]
-    public class Student : BindableBase
+    [Print("PrintTemplate1.xaml")]
+    public class PrintTemplate1:BindableBase
     {
         private string _Name;
 
@@ -58,6 +63,5 @@ namespace WPF_XPSDocumentPrint_Demo.Models
             get { return _Comments; }
             set { _Comments = value; RaisePropertyChanged(); }
         }
-
     }
 }
