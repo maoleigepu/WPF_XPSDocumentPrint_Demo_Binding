@@ -39,8 +39,6 @@ namespace WPF_XPSDocumentPrint_Demo.ViewModels
 
         public DelegateCommand<bool?> ChangeDocCommand { get; set; }
 
-
-        private delegate void LoadXpsMethod();
         private MemoryStream ms;
         private Package package;
         private Uri DocumentUri;
